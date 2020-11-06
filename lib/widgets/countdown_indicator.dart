@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:pomotroid/model/constants.dart';
 import 'package:pomotroid/model/states.dart';
 import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
@@ -12,13 +13,6 @@ class CountdownIndicator extends StatelessWidget {
   final int timeLeft;
 
 
-  String formatTime() {
-    int minutes = (timeLeft / 60).floor();
-    int seconds = timeLeft % 60;
-
-    var time = sprintf("%2i : %2i ", [minutes, seconds]);
-    return time;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +29,7 @@ class CountdownIndicator extends StatelessWidget {
             ),
           ),
           Text(
-            formatTime(),
+            formatTime(timeLeft),
             style: TextStyle(color: Colors.white, fontSize: 28),
           ),
         ],

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 
 class States extends ChangeNotifier {
-  Mode focus = Mode(Color(0xFFFE4E4d), 25);
-  Mode shortBreak = Mode(Color(0xFF05EB8C), 5);
-  Mode longBreak = Mode(Color(0xFF0BBCDA), 15);
+  Mode focus = Mode(Color(0xFFFE4E4d), 25,"Focus");
+  Mode shortBreak = Mode(Color(0xFF05EB8C), 5, "Short Break");
+  Mode longBreak = Mode(Color(0xFF0BBCDA), 15, "Long Break");
 
   int _tracker = 0;
   void changeFocusDuration(int duration) {
@@ -41,6 +41,6 @@ class States extends ChangeNotifier {
 class Mode {
   Color color;
   int duration;
-
-  Mode(this.color, this.duration);
+  String text;
+  Mode(this.color, this.duration,this.text);
 }
