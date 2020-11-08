@@ -4,6 +4,7 @@ import 'package:pomotroid/model/states.dart';
 import 'package:provider/provider.dart';
 
 class Settings extends StatefulWidget {
+
   @override
   _SettingsState createState() => _SettingsState();
 }
@@ -13,13 +14,19 @@ class _SettingsState extends State<Settings> {
   Mode shortBreak;
   Mode longBreak;
 
+  int rounds;
+
   int focusDuration, shortBreakDuration, longBreakDuration;
+  StatesProvider states;
 
   @override
   void initState() {
-    focus = Provider.of<States>(context, listen: false).focus;
-    shortBreak = Provider.of<States>(context, listen: false).shortBreak;
-    longBreak = Provider.of<States>(context, listen: false).longBreak;
+
+    states =  Provider.of<StatesProvider>(context, listen: false);
+    focus = states.focus;
+    shortBreak = states.shortBreak;
+    longBreak = states.longBreak;
+    rounds = states.rounds;
 
     focusDuration = focus.duration;
     shortBreakDuration = shortBreak.duration;
@@ -30,6 +37,7 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    print('build');
     return Scaffold(
       appBar: AppBar(
         title: Text("Timer"),
@@ -73,8 +81,7 @@ class _SettingsState extends State<Settings> {
               min: 1,
               max: 90,
               activeColor: focus.color,
-              inactiveColor:  Color(0xff2f384b),
-
+              inactiveColor: Color(0xff2f384b),
             ),
             SizedBox(
               height: 10,
@@ -104,12 +111,10 @@ class _SettingsState extends State<Settings> {
                   shortBreakDuration = value.toInt();
                 });
               },
-
               min: 1,
               max: 90,
               activeColor: shortBreak.color,
-              inactiveColor:  Color(0xff2f384b),
-
+              inactiveColor: Color(0xff2f384b),
             ),
             SizedBox(
               height: 10,
@@ -139,16 +144,62 @@ class _SettingsState extends State<Settings> {
                   longBreakDuration = value.toInt();
                 });
               },
-
               min: 1,
               max: 90,
               activeColor: longBreak.color,
-              inactiveColor:  Color(0xff2f384b),
-
+              inactiveColor: Color(0xff2f384b),
+            ), SizedBox(
+              height: 10,
+            ),
+            Center(
+                child: Text(
+              "Rounds",
+              style: kModeTitleStyle,
+            )),
+            Container(
+              width: 60,
+              height: 30,
+              decoration: BoxDecoration(
+                  color: Color(0xff2f384b),
+                  borderRadius: BorderRadius.circular(10)),
+              child: Center(
+                child: Text(
+                  rounds.toString(),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            Slider(
+              value: rounds.toDouble(),
+              onChanged: (value) {
+                setState(() {
+                  rounds = value.toInt();
+                });
+              },
+              min: 1,
+              max: 10,
+              activeColor: Color(0xFF9ba4b4),
+              inactiveColor: Color(0xff2f384b),
             )
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+
+
+    super.dispose();
+  }
+  @override
+  void deactivate() {
+    states.changeFocusDuration(focusDuration);
+    states.changeShortBreakDuration(shortBreakDuration);
+    states.changeLongBreakDuration(longBreakDuration);
+
+    states.finishSetting();
+    super.deactivate();
   }
 }

@@ -17,6 +17,7 @@ class _HomeState extends State<Home> {
 
   int timeLeft = 25;
   bool isPaused = true;
+  StatesProvider statesProvider;
 
   void startTimer() {
     _timer = Timer.periodic(
@@ -25,10 +26,8 @@ class _HomeState extends State<Home> {
         () {
           timeLeft--;
           if (timeLeft == 0) {
-            Provider.of<States>(context, listen: false).changeState();
-            timeLeft = Provider.of<States>(context, listen: false)
-                .getCurrentMode()
-                .duration;
+            statesProvider.changeMode();
+            timeLeft = statesProvider.getCurrentMode().duration;
           }
         },
       ),
@@ -37,7 +36,7 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    // startTimer();
+    statesProvider = Provider.of<StatesProvider>(context, listen: false);
     super.initState();
   }
 
@@ -52,18 +51,25 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    print('build');
     return Scaffold(
         backgroundColor: Color(0xff2f384b),
-        appBar: AppBar(actions: [
-          IconButton(icon: Icon(Icons.settings), onPressed: (){
-            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Settings()));
-          })
-        ],),
-        body: Center(
+        appBar: AppBar(
+          actions: [
+            IconButton(
+                icon: Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => Settings()));
+                })
+          ],
+        ),
+        body: Container(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                flex: 3,
+                flex: 10,
                 child: CountdownIndicator(timeLeft: timeLeft),
               ),
               Expanded(
@@ -86,6 +92,61 @@ class _HomeState extends State<Home> {
                   },
                 ),
               ),
+              Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "${statesProvider.currentRound}/${statesProvider.rounds}",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                statesProvider.reset();
+                                timeLeft = statesProvider.focus.duration;
+                                isPaused = false;
+                                _onButtonClicked();
+                              });
+                            },
+                            child: Text(
+                              "Reset",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 24),
+                            ),
+                          )
+                        ],
+                      ),
+                      IconButton(
+                          icon: Icon(
+                            Icons.skip_next_outlined,
+                            color: Colors.white,
+                            size: 25,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              statesProvider.changeMode();
+                              timeLeft =
+                                  statesProvider.getCurrentMode().duration;
+                            });
+                          })
+                    ],
+                  ),
+                ),
+              )
             ],
           ),
         ));

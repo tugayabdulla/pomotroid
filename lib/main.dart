@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => States(),
+        create: (context) => StatesProvider(),
         child: MaterialApp(
           home: Home(),
         ));

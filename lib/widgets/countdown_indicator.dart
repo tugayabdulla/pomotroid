@@ -16,13 +16,14 @@ class CountdownIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<States>(builder: (_, a, child) {
+    print("build - countdown");
+    return Consumer<StatesProvider>(builder: (_, a, child) {
       return Stack(
         alignment: Alignment.center,
         children: <Widget>[
           Container(
-            width: MediaQuery.of(context).size.width / 2,
-            height: MediaQuery.of(context).size.width / 2,
+            width: MediaQuery.of(context).size.width / 1.5,
+            height: MediaQuery.of(context).size.width / 1.5,
             margin: EdgeInsets.all(15.0),
             child: CustomPaint(
               painter: Progress(a.getCurrentMode().color, timeLeft / a.getCurrentMode().duration),
