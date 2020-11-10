@@ -1,22 +1,19 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:pomotroid/model/constants.dart';
 import 'package:pomotroid/model/states.dart';
 import 'package:provider/provider.dart';
-import 'package:sprintf/sprintf.dart';
+
+import '../constants.dart';
+
 
 class CountdownIndicator extends StatelessWidget {
-  const CountdownIndicator(
-      {@required this.timeLeft});
-
-  final int timeLeft;
+  const CountdownIndicator();
 
 
 
   @override
   Widget build(BuildContext context) {
-    print("build - countdown");
     return Consumer<StatesProvider>(builder: (_, a, child) {
       return Stack(
         alignment: Alignment.center,
@@ -26,13 +23,26 @@ class CountdownIndicator extends StatelessWidget {
             height: MediaQuery.of(context).size.width / 1.5,
             margin: EdgeInsets.all(15.0),
             child: CustomPaint(
-              painter: Progress(a.getCurrentMode().color, timeLeft / a.getCurrentMode().duration),
+              painter: Progress(a.getCurrentMode().color,
+                  a.timeLeft / a.getCurrentMode().duration),
             ),
           ),
-          Text(
-            formatTime(timeLeft),
-            style: TextStyle(color: Colors.white, fontSize: 28),
-          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                formatTime(a.timeLeft),
+                style: TextStyle(color: Colors.white, fontSize: 50),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              Text(
+                a.getCurrentMode().text.toUpperCase(),
+                style: TextStyle(color: Colors.white,fontSize: 25, fontWeight: FontWeight.bold,letterSpacing: 2),
+              ),
+            ],
+          )
         ],
       );
     });

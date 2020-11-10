@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pomotroid/model/constants.dart';
 import 'package:pomotroid/model/states.dart';
 import 'package:provider/provider.dart';
 
-class Settings extends StatefulWidget {
+import '../constants.dart';
 
+class Settings extends StatefulWidget {
   @override
   _SettingsState createState() => _SettingsState();
 }
@@ -15,14 +15,13 @@ class _SettingsState extends State<Settings> {
   Mode longBreak;
 
   int rounds;
-
+  bool changed = false;
   int focusDuration, shortBreakDuration, longBreakDuration;
   StatesProvider states;
 
   @override
   void initState() {
-
-    states =  Provider.of<StatesProvider>(context, listen: false);
+    states = Provider.of<StatesProvider>(context, listen: false);
     focus = states.focus;
     shortBreak = states.shortBreak;
     longBreak = states.longBreak;
@@ -40,6 +39,10 @@ class _SettingsState extends State<Settings> {
     print('build');
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.chevron_left),
+          onPressed: () => Navigator.pop(context, changed),
+        ),
         title: Text("Timer"),
       ),
       backgroundColor: Color(0xff2f384b),
@@ -75,9 +78,9 @@ class _SettingsState extends State<Settings> {
               onChanged: (value) {
                 setState(() {
                   focusDuration = value.toInt();
+                  changed = true;
                 });
               },
-
               min: 1,
               max: 90,
               activeColor: focus.color,
@@ -108,6 +111,8 @@ class _SettingsState extends State<Settings> {
               value: shortBreakDuration.toDouble(),
               onChanged: (value) {
                 setState(() {
+                  changed = true;
+
                   shortBreakDuration = value.toInt();
                 });
               },
@@ -141,6 +146,8 @@ class _SettingsState extends State<Settings> {
               value: longBreakDuration.toDouble(),
               onChanged: (value) {
                 setState(() {
+                  changed = true;
+
                   longBreakDuration = value.toInt();
                 });
               },
@@ -148,7 +155,8 @@ class _SettingsState extends State<Settings> {
               max: 90,
               activeColor: longBreak.color,
               inactiveColor: Color(0xff2f384b),
-            ), SizedBox(
+            ),
+            SizedBox(
               height: 10,
             ),
             Center(
@@ -173,6 +181,7 @@ class _SettingsState extends State<Settings> {
               value: rounds.toDouble(),
               onChanged: (value) {
                 setState(() {
+                  changed = true;
                   rounds = value.toInt();
                 });
               },
@@ -193,13 +202,12 @@ class _SettingsState extends State<Settings> {
 
     super.dispose();
   }
+
   @override
   void deactivate() {
     states.changeFocusDuration(focusDuration);
     states.changeShortBreakDuration(shortBreakDuration);
     states.changeLongBreakDuration(longBreakDuration);
-
-    states.finishSetting();
     super.deactivate();
   }
 }

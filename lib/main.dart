@@ -14,6 +14,9 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (context) => StatesProvider(),
         child: MaterialApp(
+          theme: ThemeData(
+            primaryColor: Color(0xff2f384b),
+          ),
           home: Home(),
         ));
   }

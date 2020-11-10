@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 
 class StatesProvider extends ChangeNotifier {
@@ -7,6 +9,8 @@ class StatesProvider extends ChangeNotifier {
 
   int _tracker = 0;
   int _rounds = 4;
+  Timer _timer;
+  int timeLeft = 25;
 
   List<Mode> tasksList = [
     Mode(Color(0xFFFE4E4d), 25, "Focus"),
@@ -22,6 +26,7 @@ class StatesProvider extends ChangeNotifier {
 
   void changeFocusDuration(int duration) {
     focus.duration = duration;
+    print(focus.duration);
   }
 
   void changeShortBreakDuration(int duration) {
@@ -32,8 +37,29 @@ class StatesProvider extends ChangeNotifier {
     longBreak.duration = duration;
   }
 
+  void startTimer() {
+    _timer = Timer.periodic(
+      Duration(seconds: 1),
+      (timer) {
+        timeLeft--;
+        if (timeLeft == 0) {
+          changeMode();
+          timeLeft = getCurrentMode().duration;
+        }
+        notifyListeners();
+      },
+    );
+  }
+
+  void cancelTimer() {
+    _timer.cancel();
+  }
+
   finishSetting() {
+    _tracker = 0;
+
     notifyListeners();
+    changeRoundCount(rounds);
   }
 
   changeRoundCount(int round) {
@@ -62,16 +88,28 @@ class StatesProvider extends ChangeNotifier {
       _tracker = -1;
     }
     _tracker++;
+    timeLeft = tasksList[_tracker].duration;
     notifyListeners();
   }
 
-  void reset() {
+  void resetProgress() {
     _tracker = 0;
+    timeLeft = focus.duration;
+    print(focus.duration);
+    notifyListeners();
+  }
+
+  void resetSettings() {
+    _tracker = 0;
+    changeRoundCount(4);
+    _rounds = 4;
+    focus.duration = 25;
+    shortBreak.duration = 5;
+    longBreak.duration = 15;
+
     notifyListeners();
   }
 }
-
-
 
 class Mode {
   Color color;
