@@ -11,7 +11,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   bool isPaused = true;
 
   @override
@@ -19,20 +18,11 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-  _onButtonClicked(ModesProvider provider) {
-    if (isPaused) {
-      provider.startTimer();
-    } else {
-      provider.cancelTimer();
-    }
-    isPaused = !isPaused;
-  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ModesProvider>(
       builder: (context, value, child) {
-
         return Scaffold(
             backgroundColor: Color(0xff2f384b),
             appBar: AppBar(
@@ -45,13 +35,9 @@ class _HomeState extends State<Home> {
                       var isChanged = await Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) => Settings()));
                       if (isChanged) {
-                        print("changed");
                         setState(() {
-
-                          value.cancelTimer();
+                          value.finishSetting();
                           isPaused = true;
-                          value.resetProgress();
-
                         });
                       }
                     })
@@ -75,12 +61,12 @@ class _HomeState extends State<Home> {
                               color: Colors.white,
                               style: BorderStyle.solid)),
                       child: Icon(
-                        isPaused ? Icons.play_arrow : Icons.pause,
+                      value.isPaused? Icons.play_arrow : Icons.pause,
                         color: Colors.white,
                       ),
                       onPressed: () {
                         setState(() {
-                          _onButtonClicked(value);
+                          value.onButtonClicked();
                         });
                       },
                     ),
@@ -110,9 +96,6 @@ class _HomeState extends State<Home> {
                                 onTap: () {
                                   setState(() {
                                     value.resetProgress();
-
-                                    isPaused = false;
-                                    _onButtonClicked(value);
                                   });
                                 },
                                 child: Text(

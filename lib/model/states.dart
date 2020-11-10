@@ -2,9 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 
-
-
-
 class ModesProvider extends ChangeNotifier {
   Mode focus = Mode(Color(0xFFFE4E4d), 25, "Focus");
   Mode shortBreak = Mode(Color(0xFF05EB8C), 5, "Short Break");
@@ -14,13 +11,24 @@ class ModesProvider extends ChangeNotifier {
   int _rounds = 4;
   Timer _timer;
   int timeLeft = 25;
-  int a;
-
-  ModesProvider() {
-    changeRoundCount(4);
-  }
 
   List<Mode> _modesList;
+
+  ModesProvider() {
+    renewModesList();
+  }
+
+  onButtonClicked() {
+    if (isPaused) {
+      startTimer();
+    } else {
+      cancelTimer();
+    }
+  }
+
+  bool get isPaused => _timer == null || !_timer.isActive;
+
+  int get rounds => _rounds;
 
   void changeFocusDuration(int duration) => focus.duration = duration;
 
@@ -28,7 +36,7 @@ class ModesProvider extends ChangeNotifier {
 
   void changeLongBreakDuration(int duration) => longBreak.duration = duration;
 
-  set longBreakDuration(int duration) => longBreak.duration = duration;
+  changeRoundCount(int round) => _rounds = round;
 
   void startTimer() {
     _timer = Timer.periodic(
@@ -51,22 +59,19 @@ class ModesProvider extends ChangeNotifier {
   }
 
   finishSetting() {
-    _tracker = 0;
-    changeRoundCount(rounds);
-    notifyListeners();
+    renewModesList();
+    resetProgress();
   }
 
-  changeRoundCount(int round) {
-    _rounds = round;
+  renewModesList() {
     _modesList = [];
-    for (int i = 0; i < round; i++) {
+    print(_rounds);
+    for (int i = 0; i < _rounds; i++) {
       _modesList.add(focus);
       _modesList.add(shortBreak);
     }
     _modesList.add(longBreak);
   }
-
-  int get rounds => _rounds;
 
   int get currentRound {
     if (_tracker == 2 * _rounds) {
@@ -89,15 +94,17 @@ class ModesProvider extends ChangeNotifier {
   }
 
   void resetProgress() {
+    cancelTimer();
     _tracker = 0;
     timeLeft = focus.duration;
     notifyListeners();
+    print(isPaused);
   }
 
   void resetSettings() {
     _tracker = 0;
-    changeRoundCount(4);
     _rounds = 4;
+    cancelTimer();
     focus.duration = 25;
     shortBreak.duration = 5;
     longBreak.duration = 15;

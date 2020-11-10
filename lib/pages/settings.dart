@@ -36,7 +36,6 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    print('build');
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -185,14 +184,22 @@ class _SettingsState extends State<Settings> {
                 setState(() {
                   changed = true;
                   rounds = value.toInt();
-                  //TODO
+                  states.changeRoundCount(rounds);
                 });
               },
               min: 1,
               max: 10,
               activeColor: Color(0xFF9ba4b4),
               inactiveColor: Color(0xff2f384b),
-            )
+            ),
+            FlatButton(
+                onPressed: () {
+                  states.resetSettings();
+                },
+                child: Text(
+                  'Reset to Default',
+                  style: TextStyle(color: Colors.white, fontSize: 25),
+                ))
           ],
         ),
       ),
@@ -206,7 +213,6 @@ class _SettingsState extends State<Settings> {
 
   @override
   void deactivate() {
-
     super.deactivate();
   }
 }
