@@ -6,15 +6,12 @@ import 'package:provider/provider.dart';
 
 import '../constants.dart';
 
-
 class CountdownIndicator extends StatelessWidget {
   const CountdownIndicator();
 
-
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<StatesProvider>(builder: (_, a, child) {
+    return Consumer<ModesProvider>(builder: (_, a, child) {
       return Stack(
         alignment: Alignment.center,
         children: <Widget>[
@@ -23,8 +20,8 @@ class CountdownIndicator extends StatelessWidget {
             height: MediaQuery.of(context).size.width / 1.5,
             margin: EdgeInsets.all(15.0),
             child: CustomPaint(
-              painter: Progress(a.getCurrentMode().color,
-                  a.timeLeft / a.getCurrentMode().duration),
+              painter: Progress(
+                  a.currentMode.color, a.timeLeft / a.currentMode.duration),
             ),
           ),
           Column(
@@ -38,8 +35,12 @@ class CountdownIndicator extends StatelessWidget {
                 height: 15,
               ),
               Text(
-                a.getCurrentMode().text.toUpperCase(),
-                style: TextStyle(color: Colors.white,fontSize: 25, fontWeight: FontWeight.bold,letterSpacing: 2),
+                a.currentMode.text.toUpperCase(),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2),
               ),
             ],
           )

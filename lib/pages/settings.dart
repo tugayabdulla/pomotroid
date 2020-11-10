@@ -17,11 +17,11 @@ class _SettingsState extends State<Settings> {
   int rounds;
   bool changed = false;
   int focusDuration, shortBreakDuration, longBreakDuration;
-  StatesProvider states;
+  ModesProvider states;
 
   @override
   void initState() {
-    states = Provider.of<StatesProvider>(context, listen: false);
+    states = Provider.of<ModesProvider>(context, listen: false);
     focus = states.focus;
     shortBreak = states.shortBreak;
     longBreak = states.longBreak;
@@ -79,6 +79,7 @@ class _SettingsState extends State<Settings> {
                 setState(() {
                   focusDuration = value.toInt();
                   changed = true;
+                  states.changeFocusDuration(focusDuration);
                 });
               },
               min: 1,
@@ -112,8 +113,9 @@ class _SettingsState extends State<Settings> {
               onChanged: (value) {
                 setState(() {
                   changed = true;
-
                   shortBreakDuration = value.toInt();
+
+                  states.changeLongBreakDuration(shortBreakDuration);
                 });
               },
               min: 1,
@@ -147,8 +149,8 @@ class _SettingsState extends State<Settings> {
               onChanged: (value) {
                 setState(() {
                   changed = true;
-
                   longBreakDuration = value.toInt();
+                  states.changeLongBreakDuration(longBreakDuration);
                 });
               },
               min: 1,
@@ -183,6 +185,7 @@ class _SettingsState extends State<Settings> {
                 setState(() {
                   changed = true;
                   rounds = value.toInt();
+                  //TODO
                 });
               },
               min: 1,
@@ -198,16 +201,12 @@ class _SettingsState extends State<Settings> {
 
   @override
   void dispose() {
-
-
     super.dispose();
   }
 
   @override
   void deactivate() {
-    states.changeFocusDuration(focusDuration);
-    states.changeShortBreakDuration(shortBreakDuration);
-    states.changeLongBreakDuration(longBreakDuration);
+
     super.deactivate();
   }
 }

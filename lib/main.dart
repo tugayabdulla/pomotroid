@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => StatesProvider(),
+        create: (context) => ModesProvider(),
         child: MaterialApp(
           theme: ThemeData(
             primaryColor: Color(0xff2f384b),

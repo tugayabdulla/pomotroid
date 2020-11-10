@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 
-class StatesProvider extends ChangeNotifier {
+
+
+
+class ModesProvider extends ChangeNotifier {
   Mode focus = Mode(Color(0xFFFE4E4d), 25, "Focus");
   Mode shortBreak = Mode(Color(0xFF05EB8C), 5, "Short Break");
   Mode longBreak = Mode(Color(0xFF0BBCDA), 15, "Long Break");
@@ -11,31 +14,21 @@ class StatesProvider extends ChangeNotifier {
   int _rounds = 4;
   Timer _timer;
   int timeLeft = 25;
+  int a;
 
-  List<Mode> tasksList = [
-    Mode(Color(0xFFFE4E4d), 25, "Focus"),
-    Mode(Color(0xFF05EB8C), 5, "Short Break"),
-    Mode(Color(0xFFFE4E4d), 25, "Focus"),
-    Mode(Color(0xFF05EB8C), 5, "Short Break"),
-    Mode(Color(0xFFFE4E4d), 25, "Focus"),
-    Mode(Color(0xFF05EB8C), 5, "Short Break"),
-    Mode(Color(0xFFFE4E4d), 25, "Focus"),
-    Mode(Color(0xFF05EB8C), 5, "Short Break"),
-    Mode(Color(0xFF0BBCDA), 15, "Long Break"),
-  ];
-
-  void changeFocusDuration(int duration) {
-    focus.duration = duration;
-    print(focus.duration);
+  ModesProvider() {
+    changeRoundCount(4);
   }
 
-  void changeShortBreakDuration(int duration) {
-    shortBreak.duration = duration;
-  }
+  List<Mode> _modesList;
 
-  void changeLongBreakDuration(int duration) {
-    longBreak.duration = duration;
-  }
+  void changeFocusDuration(int duration) => focus.duration = duration;
+
+  void changeShortBreakDuration(int duration) => shortBreak.duration = duration;
+
+  void changeLongBreakDuration(int duration) => longBreak.duration = duration;
+
+  set longBreakDuration(int duration) => longBreak.duration = duration;
 
   void startTimer() {
     _timer = Timer.periodic(
@@ -44,7 +37,7 @@ class StatesProvider extends ChangeNotifier {
         timeLeft--;
         if (timeLeft == 0) {
           changeMode();
-          timeLeft = getCurrentMode().duration;
+          timeLeft = currentMode.duration;
         }
         notifyListeners();
       },
@@ -52,24 +45,25 @@ class StatesProvider extends ChangeNotifier {
   }
 
   void cancelTimer() {
-    _timer.cancel();
+    if (_timer != null) {
+      _timer.cancel();
+    }
   }
 
   finishSetting() {
     _tracker = 0;
-
-    notifyListeners();
     changeRoundCount(rounds);
+    notifyListeners();
   }
 
   changeRoundCount(int round) {
     _rounds = round;
-    tasksList = [];
+    _modesList = [];
     for (int i = 0; i < round; i++) {
-      tasksList.add(focus);
-      tasksList.add(shortBreak);
+      _modesList.add(focus);
+      _modesList.add(shortBreak);
     }
-    tasksList.add(longBreak);
+    _modesList.add(longBreak);
   }
 
   int get rounds => _rounds;
@@ -81,21 +75,22 @@ class StatesProvider extends ChangeNotifier {
     return (_tracker / 2).floor() + 1;
   }
 
-  Mode getCurrentMode() => tasksList[_tracker];
+  get currentMode => _modesList[_tracker];
 
   void changeMode() {
     if (_tracker == 2 * _rounds) {
       _tracker = -1;
     }
     _tracker++;
-    timeLeft = tasksList[_tracker].duration;
+    timeLeft = _modesList[_tracker].duration;
+    cancelTimer();
+    startTimer();
     notifyListeners();
   }
 
   void resetProgress() {
     _tracker = 0;
     timeLeft = focus.duration;
-    print(focus.duration);
     notifyListeners();
   }
 

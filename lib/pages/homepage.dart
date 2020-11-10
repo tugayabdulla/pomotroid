@@ -19,7 +19,7 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-  _onButtonClicked(StatesProvider provider) {
+  _onButtonClicked(ModesProvider provider) {
     if (isPaused) {
       provider.startTimer();
     } else {
@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<StatesProvider>(
+    return Consumer<ModesProvider>(
       builder: (context, value, child) {
 
         return Scaffold(
@@ -45,7 +45,9 @@ class _HomeState extends State<Home> {
                       var isChanged = await Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) => Settings()));
                       if (isChanged) {
+                        print("changed");
                         setState(() {
+
                           value.cancelTimer();
                           isPaused = true;
                           value.resetProgress();
@@ -79,7 +81,6 @@ class _HomeState extends State<Home> {
                       onPressed: () {
                         setState(() {
                           _onButtonClicked(value);
-                          print('pressed');
                         });
                       },
                     ),
