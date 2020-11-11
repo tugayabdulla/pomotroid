@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pomotroid/model/states.dart';
+import 'package:pomotroid/model/modes.dart';
 import 'package:provider/provider.dart';
 
 import '../constants.dart';

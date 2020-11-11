@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pomotroid/model/states.dart';
+import 'package:pomotroid/model/modes.dart';
 import 'package:pomotroid/pages/settings.dart';
 import 'package:pomotroid/widgets/countdown_indicator.dart';
 import 'package:provider/provider.dart';

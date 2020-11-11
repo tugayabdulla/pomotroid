@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pomotroid/pages/homepage.dart';
 import 'package:provider/provider.dart';
 
-import 'model/states.dart';
+import 'model/modes.dart';
 
 void main() {
   runApp(MyApp());

@@ -2,15 +2,22 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 
+const DEFAULT_ROUND = 4;
+const DEFAULT_FOCUS_DURATION = 25;
+const DEFAULT_SHORT_BREAK_DURATION = 5;
+const DEFAULT_LONG_BREAK_DURATION = 15;
+
 class ModesProvider extends ChangeNotifier {
-  Mode focus = Mode(Color(0xFFFE4E4d), 25, "Focus");
-  Mode shortBreak = Mode(Color(0xFF05EB8C), 5, "Short Break");
-  Mode longBreak = Mode(Color(0xFF0BBCDA), 15, "Long Break");
+  Mode focus = Mode(Color(0xFFFE4E4d), DEFAULT_FOCUS_DURATION, "Focus");
+  Mode shortBreak =
+      Mode(Color(0xFF05EB8C), DEFAULT_SHORT_BREAK_DURATION, "Short Break");
+  Mode longBreak =
+      Mode(Color(0xFF0BBCDA), DEFAULT_LONG_BREAK_DURATION, "Long Break");
 
   int _tracker = 0;
-  int _rounds = 4;
+  int _rounds = DEFAULT_ROUND;
   Timer _timer;
-  int timeLeft = 25;
+  int timeLeft = DEFAULT_FOCUS_DURATION;
 
   List<Mode> _modesList;
 
@@ -19,11 +26,7 @@ class ModesProvider extends ChangeNotifier {
   }
 
   onButtonClicked() {
-    if (isPaused) {
-      startTimer();
-    } else {
-      cancelTimer();
-    }
+    isPaused ? startTimer() : cancelTimer();
   }
 
   bool get isPaused => _timer == null || !_timer.isActive;
@@ -65,7 +68,7 @@ class ModesProvider extends ChangeNotifier {
 
   renewModesList() {
     _modesList = [];
-    print(_rounds);
+
     for (int i = 0; i < _rounds; i++) {
       _modesList.add(focus);
       _modesList.add(shortBreak);
@@ -73,12 +76,9 @@ class ModesProvider extends ChangeNotifier {
     _modesList.add(longBreak);
   }
 
-  int get currentRound {
-    if (_tracker == 2 * _rounds) {
-      return (_tracker / 2).floor();
-    }
-    return (_tracker / 2).floor() + 1;
-  }
+  int get currentRound => _tracker == 2 * _rounds
+      ? (_tracker / 2).floor()
+      : (_tracker / 2).floor() + 1;
 
   get currentMode => _modesList[_tracker];
 
@@ -98,17 +98,17 @@ class ModesProvider extends ChangeNotifier {
     _tracker = 0;
     timeLeft = focus.duration;
     notifyListeners();
-    print(isPaused);
   }
 
   void resetSettings() {
     _tracker = 0;
     _rounds = 4;
     cancelTimer();
-    focus.duration = 25;
-    shortBreak.duration = 5;
-    longBreak.duration = 15;
 
+    focus.duration = DEFAULT_FOCUS_DURATION;
+    shortBreak.duration = DEFAULT_SHORT_BREAK_DURATION;
+    longBreak.duration = DEFAULT_LONG_BREAK_DURATION;
+// TODO
     notifyListeners();
   }
 }
