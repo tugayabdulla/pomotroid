@@ -14,9 +14,9 @@ class _SettingsState extends State<Settings> {
   Mode shortBreak;
   Mode longBreak;
 
-  int rounds;
   bool changed = false;
-  int focusDuration, shortBreakDuration, longBreakDuration;
+
+  // int focusDuration, shortBreakDuration, longBreakDuration;
   ModesProvider states;
 
   @override
@@ -25,11 +25,10 @@ class _SettingsState extends State<Settings> {
     focus = states.focus;
     shortBreak = states.shortBreak;
     longBreak = states.longBreak;
-    rounds = states.rounds;
-
-    focusDuration = focus.duration;
-    shortBreakDuration = shortBreak.duration;
-    longBreakDuration = longBreak.duration;
+    //
+    // focusDuration = focus.duration;
+    // shortBreakDuration = shortBreak.duration;
+    // longBreakDuration = longBreak.duration;
 
     super.initState();
   }
@@ -67,18 +66,17 @@ class _SettingsState extends State<Settings> {
                   borderRadius: BorderRadius.circular(10)),
               child: Center(
                 child: Text(
-                  formatTime(focusDuration),
+                  formatTime(focus.duration),
                   style: TextStyle(color: Colors.white),
                 ),
               ),
             ),
             Slider(
-              value: focusDuration.toDouble(),
+              value: focus.duration.toDouble(),
               onChanged: (value) {
                 setState(() {
-                  focusDuration = value.toInt();
                   changed = true;
-                  states.changeFocusDuration(focusDuration);
+                  states.changeFocusDuration(value.toInt());
                 });
               },
               min: 1,
@@ -102,19 +100,17 @@ class _SettingsState extends State<Settings> {
                   borderRadius: BorderRadius.circular(10)),
               child: Center(
                 child: Text(
-                  formatTime(shortBreakDuration),
+                  formatTime(shortBreak.duration),
                   style: TextStyle(color: Colors.white),
                 ),
               ),
             ),
             Slider(
-              value: shortBreakDuration.toDouble(),
+              value: shortBreak.duration.toDouble(),
               onChanged: (value) {
                 setState(() {
                   changed = true;
-                  shortBreakDuration = value.toInt();
-
-                  states.changeLongBreakDuration(shortBreakDuration);
+                  states.changeShortBreakDuration(value.toInt());
                 });
               },
               min: 1,
@@ -138,18 +134,17 @@ class _SettingsState extends State<Settings> {
                   borderRadius: BorderRadius.circular(10)),
               child: Center(
                 child: Text(
-                  formatTime(longBreakDuration),
+                  formatTime(longBreak.duration),
                   style: TextStyle(color: Colors.white),
                 ),
               ),
             ),
             Slider(
-              value: longBreakDuration.toDouble(),
+              value: longBreak.duration.toDouble(),
               onChanged: (value) {
                 setState(() {
                   changed = true;
-                  longBreakDuration = value.toInt();
-                  states.changeLongBreakDuration(longBreakDuration);
+                  states.changeLongBreakDuration(value.toInt());
                 });
               },
               min: 1,
@@ -173,18 +168,17 @@ class _SettingsState extends State<Settings> {
                   borderRadius: BorderRadius.circular(10)),
               child: Center(
                 child: Text(
-                  rounds.toString(),
+                  states.rounds.toString(),
                   style: TextStyle(color: Colors.white),
                 ),
               ),
             ),
             Slider(
-              value: rounds.toDouble(),
+              value: states.rounds.toDouble(),
               onChanged: (value) {
                 setState(() {
                   changed = true;
-                  rounds = value.toInt();
-                  states.changeRoundCount(rounds);
+                  states.changeRoundCount(value.toInt());
                 });
               },
               min: 1,
@@ -195,6 +189,7 @@ class _SettingsState extends State<Settings> {
             FlatButton(
                 onPressed: () {
                   states.resetSettings();
+                  setState(() {});
                 },
                 child: Text(
                   'Reset to Default',
@@ -204,15 +199,5 @@ class _SettingsState extends State<Settings> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  void deactivate() {
-    super.deactivate();
   }
 }

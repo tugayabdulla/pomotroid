@@ -109,7 +109,6 @@ class ModesProvider extends ChangeNotifier {
     shortBreak.duration = DEFAULT_SHORT_BREAK_DURATION;
     longBreak.duration = DEFAULT_LONG_BREAK_DURATION;
 // TODO
-    notifyListeners();
   }
 }
 
