@@ -2,44 +2,53 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 
-const DEFAULT_ROUND = 4;
-const DEFAULT_FOCUS_DURATION = 25;
-const DEFAULT_SHORT_BREAK_DURATION = 5;
-const DEFAULT_LONG_BREAK_DURATION = 15;
+import '../constants.dart';
 
 class ModesProvider extends ChangeNotifier {
-  Mode focus = Mode(Color(0xFFFE4E4d), DEFAULT_FOCUS_DURATION, "Focus");
-  Mode shortBreak =
-      Mode(Color(0xFF05EB8C), DEFAULT_SHORT_BREAK_DURATION, "Short Break");
-  Mode longBreak =
-      Mode(Color(0xFF0BBCDA), DEFAULT_LONG_BREAK_DURATION, "Long Break");
+  Mode focus;
+  Mode shortBreak;
+  Mode longBreak;
+  int _rounds;
 
   int _tracker = 0;
-  int _rounds = DEFAULT_ROUND;
+
   Timer _timer;
   int timeLeft = DEFAULT_FOCUS_DURATION;
 
   List<Mode> _modesList;
 
   ModesProvider() {
+    focus = Mode(Color(0xFFFE4E4d), DEFAULT_FOCUS_DURATION, "Focus");
+    shortBreak =
+        Mode(Color(0xFF05EB8C), DEFAULT_SHORT_BREAK_DURATION, "Short Break");
+    longBreak =
+        Mode(Color(0xFF0BBCDA), DEFAULT_LONG_BREAK_DURATION, "Long Break");
+    _rounds = DEFAULT_ROUND;
     renewModesList();
   }
 
-  onButtonClicked() {
-    isPaused ? startTimer() : cancelTimer();
+  ModesProvider.fromSharedPrefs(int round, int focusDuration,
+      int shortBreakDuration, int longBreakDuration) {
+    focus = Mode(Color(0xFFFE4E4d), focusDuration, "Focus");
+    shortBreak = Mode(Color(0xFF05EB8C), shortBreakDuration, "Short Break");
+    longBreak = Mode(Color(0xFF0BBCDA), longBreakDuration, "Long Break");
+    _rounds = round;
+    renewModesList();
   }
+
+  onButtonClicked() => isPaused ? startTimer() : cancelTimer();
 
   bool get isPaused => _timer == null || !_timer.isActive;
 
   int get rounds => _rounds;
 
-  void changeFocusDuration(int duration) => focus.duration = duration;
+  set focusDuration(int duration) => focus.duration = duration;
 
-  void changeShortBreakDuration(int duration) => shortBreak.duration = duration;
+  set shortBreakDuration(int duration) => shortBreak.duration = duration;
 
-  void changeLongBreakDuration(int duration) => longBreak.duration = duration;
+  set longBreakDuration(int duration) => longBreak.duration = duration;
 
-  changeRoundCount(int round) => _rounds = round;
+  set roundCount(int round) => _rounds = round;
 
   void startTimer() {
     _timer = Timer.periodic(
@@ -102,13 +111,12 @@ class ModesProvider extends ChangeNotifier {
 
   void resetSettings() {
     _tracker = 0;
-    _rounds = 4;
+    _rounds = DEFAULT_ROUND;
     cancelTimer();
 
     focus.duration = DEFAULT_FOCUS_DURATION;
     shortBreak.duration = DEFAULT_SHORT_BREAK_DURATION;
     longBreak.duration = DEFAULT_LONG_BREAK_DURATION;
-// TODO
   }
 }
 

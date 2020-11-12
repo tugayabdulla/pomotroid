@@ -11,7 +11,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool isPaused = true;
 
   @override
   void initState() {
@@ -22,7 +21,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ModesProvider>(
-      builder: (context, value, child) {
+      builder: (context, provider, child) {
         return Scaffold(
             backgroundColor: Color(0xff2f384b),
             appBar: AppBar(
@@ -36,8 +35,7 @@ class _HomeState extends State<Home> {
                           MaterialPageRoute(builder: (context) => Settings()));
                       if (isChanged) {
                         setState(() {
-                          value.finishSetting();
-                          isPaused = true;
+                          provider.finishSetting();
                         });
                       }
                     })
@@ -61,12 +59,12 @@ class _HomeState extends State<Home> {
                               color: Colors.white,
                               style: BorderStyle.solid)),
                       child: Icon(
-                      value.isPaused? Icons.play_arrow : Icons.pause,
+                      provider.isPaused? Icons.play_arrow : Icons.pause,
                         color: Colors.white,
                       ),
                       onPressed: () {
                         setState(() {
-                          value.onButtonClicked();
+                          provider.onButtonClicked();
                         });
                       },
                     ),
@@ -83,7 +81,7 @@ class _HomeState extends State<Home> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Text(
-                                "${value.currentRound}/${value.rounds}",
+                                "${provider.currentRound}/${provider.rounds}",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 24,
@@ -95,7 +93,7 @@ class _HomeState extends State<Home> {
                               InkWell(
                                 onTap: () {
                                   setState(() {
-                                    value.resetProgress();
+                                    provider.resetProgress();
                                   });
                                 },
                                 child: Text(
@@ -114,7 +112,7 @@ class _HomeState extends State<Home> {
                               ),
                               onPressed: () {
                                 setState(() {
-                                  value.changeMode();
+                                  provider.changeMode();
                                 });
                               })
                         ],

@@ -17,14 +17,14 @@ class _SettingsState extends State<Settings> {
   bool changed = false;
 
   // int focusDuration, shortBreakDuration, longBreakDuration;
-  ModesProvider states;
+  ModesProvider provider;
 
   @override
   void initState() {
-    states = Provider.of<ModesProvider>(context, listen: false);
-    focus = states.focus;
-    shortBreak = states.shortBreak;
-    longBreak = states.longBreak;
+    provider = Provider.of<ModesProvider>(context, listen: false);
+    focus = provider.focus;
+    shortBreak = provider.shortBreak;
+    longBreak = provider.longBreak;
     //
     // focusDuration = focus.duration;
     // shortBreakDuration = shortBreak.duration;
@@ -37,16 +37,16 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.chevron_left),
           onPressed: () => Navigator.pop(context, changed),
         ),
-        title: Text("Timer"),
+        title: Text("Settings"),
       ),
       backgroundColor: Color(0xff2f384b),
       body: Container(
-        margin: EdgeInsets.symmetric(vertical: 50),
-        padding: EdgeInsets.symmetric(horizontal: 15),
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 50),
         color: Color(0xFF3d4457),
         child: Column(
           children: [
@@ -72,11 +72,11 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             Slider(
-              value: focus.duration.toDouble(),
+              value: focus.duration/60,
               onChanged: (value) {
                 setState(() {
                   changed = true;
-                  states.changeFocusDuration(value.toInt());
+                  provider.focusDuration = value.toInt()*60;
                 });
               },
               min: 1,
@@ -106,11 +106,11 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             Slider(
-              value: shortBreak.duration.toDouble(),
+              value: shortBreak.duration/60,
               onChanged: (value) {
                 setState(() {
                   changed = true;
-                  states.changeShortBreakDuration(value.toInt());
+                  provider.shortBreakDuration = value.toInt()*60;
                 });
               },
               min: 1,
@@ -140,11 +140,11 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             Slider(
-              value: longBreak.duration.toDouble(),
+              value: longBreak.duration/60,
               onChanged: (value) {
                 setState(() {
                   changed = true;
-                  states.changeLongBreakDuration(value.toInt());
+                  provider.longBreakDuration = value.toInt()*60;
                 });
               },
               min: 1,
@@ -168,17 +168,17 @@ class _SettingsState extends State<Settings> {
                   borderRadius: BorderRadius.circular(10)),
               child: Center(
                 child: Text(
-                  states.rounds.toString(),
+                  provider.rounds.toString(),
                   style: TextStyle(color: Colors.white),
                 ),
               ),
             ),
             Slider(
-              value: states.rounds.toDouble(),
+              value: provider.rounds.toDouble(),
               onChanged: (value) {
                 setState(() {
                   changed = true;
-                  states.changeRoundCount(value.toInt());
+                  provider.roundCount = value.toInt();
                 });
               },
               min: 1,
@@ -186,9 +186,12 @@ class _SettingsState extends State<Settings> {
               activeColor: Color(0xFF9ba4b4),
               inactiveColor: Color(0xff2f384b),
             ),
+            SizedBox(
+              height: 15,
+            ),
             FlatButton(
                 onPressed: () {
-                  states.resetSettings();
+                  provider.resetSettings();
                   setState(() {});
                 },
                 child: Text(
